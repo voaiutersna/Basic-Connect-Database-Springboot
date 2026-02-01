@@ -1,6 +1,7 @@
 package com.skibidop.temp.controllers;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.skibidop.temp.dtos.UserDto;
 import com.skibidop.temp.models.UserData;
 import com.skibidop.temp.repositories.UserRepo;
+
 
 
 @RestController
@@ -36,7 +38,39 @@ public class UserController {
         .findFirst().orElse(null);
         return user;
     }
+
+    @PostMapping("/user-dto-autowired-email")
+    public UserDto getMethodEmail(@RequestBody UserDto userDto) {
+        // System.out.println("email value: " + email);
+        UserDto UserWithEmail = userepo.findByemail(userDto.getEmail())
+        .map(user-> new UserDto(user.getId(),user.getName(),user.getEmail(),user.getPassword())).orElse(null);
+        if (UserWithEmail == null){
+            return null;
+        }
+        return UserWithEmail;
+    }
+
+    @PostMapping("/user-email-destruce")
+    public UserDto getMethodDestructure(@RequestBody Map<String, String> body) {
+        // System.out.println("email value: " + email);
+        String email = body.get("email");
+        UserDto UserWithEmail = userepo.findByemail(email)
+        .map(user-> new UserDto(user.getId(),user.getName(),user.getEmail(),user.getPassword())).orElse(null);
+        if (UserWithEmail == null){
+            return null;
+        }
+        return UserWithEmail;
+    }
+
+    @PostMapping("/user-dto-autowired-name")
+    public UserDto getMethodName(@RequestBody UserDto userDto) {
+        UserDto UserWithEmail = userepo.findByname(userDto.getName())
+        .map(user-> new UserDto(user.getId(),user.getName(),user.getEmail(),user.getPassword())).orElse(null);
+        return UserWithEmail;
+    }
     
+    //POST PUT DELETE ข้างล่าง
+
     @PostMapping("/user-dto-autowired")
     public UserDto postUser(@RequestBody UserDto user){
         //Add user
@@ -45,6 +79,7 @@ public class UserController {
         //Return ตัวที่ Add ล่าสุด
         return new UserDto(savedUser.getId(),savedUser.getName(),savedUser.getEmail(),savedUser.getPassword());
     }
+
 
     @PutMapping("/user-dto-autowired/{id}")
     public String putMethodName(@PathVariable String id, @RequestBody UserDto userDto) {
@@ -58,7 +93,7 @@ public class UserController {
         user.setPassword(userDto.getPassword());
         userepo.save(user);
         return "Update Successfully";
-        
+
         // save() มันรู้ได้ไงว่ามันจะ INSERT หรือ UPDATE
         // ถ้า entity.getId() == null  →  INSERT (สร้างใหม่)
         // ถ้า entity.getId() != null  →  UPDATE (แก้ไข)

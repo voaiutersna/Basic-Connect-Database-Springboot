@@ -11,6 +11,7 @@ public class UserDto {
     // private String sender;   // รับค่า จาก field "sender" ไปใส่ sender
     // }
     
+    //ใช้ในการรับ REQ
     @JsonProperty("id")
     private String id;
     @JsonProperty("name")
@@ -23,6 +24,8 @@ public class UserDto {
     public UserDto(){
 
     }
+
+    //ใช้ในการส่ง RES
     public UserDto(String name,String email,String password){
         this.name = name;
         this.email = email;
