@@ -2,6 +2,7 @@ package com.skibidop.temp.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
 public class UserDto {
@@ -16,11 +17,15 @@ public class UserDto {
     //ใช้ในการรับ REQ
     @JsonProperty("id")
     private String id;
+
     @JsonProperty("name")
     private String name;
+
     @JsonProperty("email")
-    @NotBlank(message="Email is cannot null")
+    @NotBlank(message="Email cannot be null")
+    @Email(message="Email is not valid format")
     private String email;
+    
     @JsonProperty("password")
     private String password;
 
@@ -67,7 +72,15 @@ public class UserDto {
      public void setId(String id){
         this.id = id;
     }
-
-
-
 }
+
+// Hibernate validators provide the following annotations that are very helpful for software development.
+
+// @NotNull: @NotNull ensures that a field is not null but allows empty values (e.g., an empty string or an empty collection).
+// @NotEmpty: @NotEmpty ensures that a field is not null and also not empty, meaning it must contain at least one element (for collections) or at least one character (for strings).
+// @NotBlank: @NotBlank applies only to strings and ensures they are not null, not empty and contain at least one non-whitespace character (i.e., spaces alone are not allowed).
+// @Min: Given Minimum value has to be satisfied
+// @Max: Given Maximum value has to be satisfied
+// @Size: Field size should be less than or greater than the specified field size
+// @Email: Email can be validated with this
+// @Pattern: Given the RegEx Pattern has to be satisfied.

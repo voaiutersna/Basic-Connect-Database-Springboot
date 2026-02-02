@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,14 +12,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.skibidop.temp.dtos.UserDto;
 import com.skibidop.temp.models.UserData;
 import com.skibidop.temp.repositories.UserRepo;
 
 import jakarta.validation.Valid;
-
-
 
 @RestController
 public class UserController {
@@ -64,21 +64,27 @@ public class UserController {
         return UserWithEmail;
     }
 
-    @PostMapping("/user-dto-autowired-name")
+    @PostMapping("/user-dto-autowired-name") //handler err
     public UserDto getMethodName(@RequestBody UserDto userDto) {
         UserDto UserWithEmail = userepo.findByname(userDto.getName())
         .map(user-> new UserDto(user.getId(),user.getName(),user.getEmail(),user.getPassword())).orElse(null);
+        if (UserWithEmail == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"user not found");
+        }
         return UserWithEmail;
     }
-    
-    //POST PUT DELETE ข้างล่าง
 
-    @PostMapping("/user-dto-autowired")
+    // @Valid = สวิตช์เปิด/ปิด validation (ถ้าไม่ใส่ = ไม่ validate เลย)
+    // 1.@Valid บอก Spring ว่า "ช่วย validate object นี้ที"
+    // 2.Spring ส่ง object ไปให้ Hibernate Validator
+    // 3.Hibernate Validator scan ทุก field ใน UserDto หา annotation ที่เป็น constraint เช่น @NotBlank, @NotNull, @Email, @Size ฯลฯ
+    // 4.เจอ @NotBlank ที่ field email → เช็คว่าค่าเป็น blank ไหม
+    // 5.ถ้า fail → throw MethodArgumentNotValidException
+
+    @PostMapping("/user-dto-autowired") //handle err
     public UserDto postUser(@Valid @RequestBody UserDto user){
-        //Add user
         UserData savedUser = userepo.save(new UserData(user.getName(),user.getEmail(),user.getPassword()));
 
-        //Return ตัวที่ Add ล่าสุด
         return new UserDto(savedUser.getId(),savedUser.getName(),savedUser.getEmail(),savedUser.getPassword());
     }
 
