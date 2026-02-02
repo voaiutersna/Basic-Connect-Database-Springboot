@@ -13,7 +13,7 @@ public interface UserRepo extends JpaRepository<UserData, String> {
     Optional<UserData> findByemail(String email);
     Optional<UserData> findByname(String name);
 }
-
+// Doc https://docs.spring.io/spring-data/jpa/reference/jpa/query-methods.html
 // สร้างชื่อ function ตัว Jpa ก็จะ parse เป็นคำสั่ง SQL สุดเท่ให้ได้เลย โคตรดี
 // findByemail(String email)
 // ^^^^  ^^^^^

@@ -2,6 +2,8 @@ package com.skibidop.temp.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class UserDto {
     // public class Message {
     // @JsonProperty("body")
@@ -17,6 +19,7 @@ public class UserDto {
     @JsonProperty("name")
     private String name;
     @JsonProperty("email")
+    @NotBlank(message="Email is cannot null")
     private String email;
     @JsonProperty("password")
     private String password;

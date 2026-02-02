@@ -16,6 +16,8 @@ import com.skibidop.temp.dtos.UserDto;
 import com.skibidop.temp.models.UserData;
 import com.skibidop.temp.repositories.UserRepo;
 
+import jakarta.validation.Valid;
+
 
 
 @RestController
@@ -72,7 +74,7 @@ public class UserController {
     //POST PUT DELETE ข้างล่าง
 
     @PostMapping("/user-dto-autowired")
-    public UserDto postUser(@RequestBody UserDto user){
+    public UserDto postUser(@Valid @RequestBody UserDto user){
         //Add user
         UserData savedUser = userepo.save(new UserData(user.getName(),user.getEmail(),user.getPassword()));
 
